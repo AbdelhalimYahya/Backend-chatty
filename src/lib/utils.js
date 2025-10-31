@@ -5,7 +5,7 @@ export const generateToken = (userID , res) => {
     res.cookie("token" , token , {
         httpOnly : true, // more secure
         secure : process.env.NODE_ENV !== "development",
-        sameSite : "strict", // more secure
+        sameSite : "none", // more secure
         maxAge : 15 * 24 * 60 * 60 * 1000
     });
 
