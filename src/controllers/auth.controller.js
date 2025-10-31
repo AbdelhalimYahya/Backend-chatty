@@ -28,8 +28,8 @@ export const signup = async (req, res) => {
     });
 
     if (newUser) {
-      // generate jwt token here
-      generateToken(newUser._id, res);
+      // Generate token and return it in response
+      const token = generateToken(newUser._id);
       await newUser.save();
 
       res.status(201).json({
@@ -37,6 +37,7 @@ export const signup = async (req, res) => {
         fullName: newUser.fullName,
         email: newUser.email,
         profilePic: newUser.profilePic,
+        token: token // Send token in response
       });
     } else {
       res.status(400).json({ message: "Invalid user data" });
@@ -61,13 +62,14 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    generateToken(user._id, res);
+    const token = generateToken(user._id);
 
     res.status(200).json({
       _id: user._id,
       fullName: user.fullName,
       email: user.email,
       profilePic: user.profilePic,
+      token: token // Send token in response
     });
   } catch (error) {
     console.log("Error in login controller", error.message);
@@ -77,7 +79,7 @@ export const login = async (req, res) => {
 
 export const logout = (req, res) => {
   try {
-    res.cookie("token", "", { maxAge: 0 });
+    // No need to clear cookies anymore
     res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
     console.log("Error in logout controller", error.message);
@@ -85,6 +87,7 @@ export const logout = (req, res) => {
   }
 };
 
+// updateProfile and checkAuth remain the same
 export const updateProfile = async (req, res) => {
   try {
     const { profilePic } = req.body;
